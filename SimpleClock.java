@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class SimpleClock extends JFrame {
@@ -51,22 +52,33 @@ public class SimpleClock extends JFrame {
         }
     
         public void setTimer() {
-            while (true) {
-                time = timeFormat.format(Calendar.getInstance().getTime());
-                timeLabel.setText(time);
-    
-                day = dayFormat.format(Calendar.getInstance().getTime());
-                dayLabel.setText(day);
-    
-                date = dateFormat.format(Calendar.getInstance().getTime());
-                dateLabel.setText(date);
-    
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                    e.getStackTrace();
+            // Create and start a new thread for the clock updates
+            Thread clockThread = new Thread(() -> {
+                while (true) {
+                    // Safely update UI from the worker thread using SwingUtilities.invokeLater
+                    SwingUtilities.invokeLater(() -> {
+                        time = timeFormat.format(Calendar.getInstance().getTime());
+                        timeLabel.setText(time);
+        
+                        day = dayFormat.format(Calendar.getInstance().getTime());
+                        dayLabel.setText(day);
+        
+                        date = dateFormat.format(Calendar.getInstance().getTime());
+                        dateLabel.setText(date);
+                    });
+        
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
                 }
-            }
+            });
+            
+            // Set thread as daemon so it stops when the application exits
+            clockThread.setDaemon(true);
+            clockThread.start();
         }
         public static void main(String[] args) {
             new SimpleClock();
