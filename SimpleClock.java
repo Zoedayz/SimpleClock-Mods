@@ -1,6 +1,7 @@
 //package SimpleClock;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,9 +25,15 @@ public class SimpleClock extends JFrame {
         SimpleClock() {
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             this.setTitle("Digital Clock");
-            this.setLayout(new FlowLayout());
-            this.setSize(350, 220);
+            // Use FlowLayout with horizontal and vertical gaps for better spacing
+            this.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
+            this.setSize(850, 200);
             this.setResizable(false);
+            
+            // Create a main panel with padding (margins)
+            JPanel mainPanel = new JPanel();
+            mainPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 20));
+            mainPanel.setBorder(new EmptyBorder(15, 15, 15, 15));
     
             timeFormat = new SimpleDateFormat("hh:mm:ss a");
             dayFormat=new SimpleDateFormat("EEEE");
@@ -36,16 +43,20 @@ public class SimpleClock extends JFrame {
             timeLabel.setBackground(Color.BLACK);
             timeLabel.setForeground(Color.WHITE);
             timeLabel.setOpaque(true);
+            timeLabel.setBorder(new EmptyBorder(10, 15, 10, 15));
             dayLabel=new JLabel();
             dayLabel.setFont(new Font("Ink Free",Font.BOLD,34));
+            dayLabel.setBorder(new EmptyBorder(5, 10, 5, 10));
     
             dateLabel=new JLabel();
             dateLabel.setFont(new Font("Ink Free",Font.BOLD,30));
+            dateLabel.setBorder(new EmptyBorder(5, 10, 5, 10));
     
     
-            this.add(timeLabel);
-            this.add(dayLabel);
-            this.add(dateLabel);
+            mainPanel.add(timeLabel);
+            mainPanel.add(dayLabel);
+            mainPanel.add(dateLabel);
+            this.add(mainPanel);
             this.setVisible(true);
     
             setTimer();
